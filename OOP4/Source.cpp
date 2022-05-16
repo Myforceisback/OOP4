@@ -1,103 +1,113 @@
-#include <iostream>
-#include <stdio.h>
-#include <string>
-#include <stdlib.h>
-
+#pragma once
+#include<iostream>
+#include<Windows.h>
+#include<vector>
+#include<algorithm>
 using namespace std;
-
-class Arr {
+template <class T> class Set
+{
 private:
-    int* a;
     int n;
-    void Create() {
-        a = new int[n];
-    }
+    T num, delNum;
+    vector<T> SetVector;
 
 public:
-    Arr() : n(5) { Create(); }
-    Arr(int size) : n(size) { Create(); };
-    ~Arr() { delete[] a; }
-
-    void set() {
-        cout << "Write elements:\n";
-        for (int i = 0; i < n; i++)
-            cin >> a[i];
-    }
-
-    void output() {
-        for (int i = 0; i < n; i++)
-            cout << a[i] << " ";
-        cout << "\n";
-    }
-
-
-    Arr operator + (const Arr& other) {
-        int sum_n;
-        sum_n = this->n + other.n;
-        Arr temp(sum_n);
-        for (int i = 0; i < sum_n; i++) {
-            temp.a[i] = 0;
-        }
-        for (int i = 0; i < this->n; i++) {
-            temp.a[i] += this->a[i];
-        }
-        for (int i = this->n; i < sum_n; i++) {
-            temp.a[i] += other.a[i];
-        }
-        return temp;
-    }
-
-    bool operator == (const Arr& other) {
-
-        int tmp = 0;
-
-        if (this->n == other.n) {
-            for (int i = 0; i < n; i++) {
-                if (this->a[i] == other.a[i]) {
-                    tmp += 1;
-                }
-            }
-            if (tmp == n) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
+    class NORMALNO_POIMAL {};
+    class YAZs {};
+    class bI {};
+    Set() {};
+    Set(int amount) {
+        cout << "Enter number of elemnts (around 1 or 20): " << endl;
+        cin >> amount;
+        if (amount < 1 || amount > 20)  throw NORMALNO_POIMAL();
         else {
-            return false;
-        }
+            cout << "Enter the elements : " << endl;
 
+            for (int i = 0; i < amount; i++) {
+                cin >> num;
+                if (find(SetVector.begin(), SetVector.end(), num) == SetVector.end())
+                    SetVector.push_back(num);
+            }
+            sort(SetVector.begin(), SetVector.end());
+        }
+    };
+    BOOL operator -(T delNum) {
+        if (SetVector.begin() == SetVector.end()) throw bI();
+        else {
+            SetVector.erase(remove(SetVector.begin(), SetVector.end(), delNum), SetVector.end());
+            return true;
+        }
+    }
+    void PrintSet() {
+        cout << endl;
+
+        for (int i = 0; i < SetVector.size(); i++) {
+            cout << SetVector[i] << endl;
+        }
+    };
+    BOOL operator >(Set<T> B) {
+        return includes(SetVector.begin(), SetVector.end(), B.SetVector.begin(), B.SetVector.end());
+    }
+    BOOL operator !=(Set<T> right) {
+        if (right.SetVector.size() != SetVector.size())
+            return true;
+        for (int i = 0; i < SetVector.size(); i++) {
+            if (right.SetVector[i] != SetVector[i]) return true;
+        }
+        return false;
+    }
+    ~Set() {
+        SetVector.clear();
+    };
+    BOOL operator +(T num) {
+        if (SetVector.size() + 1 > 20) throw YAZs();
+        else {
+            if (find(SetVector.begin(), SetVector.end(), num) == SetVector.end())
+                SetVector.push_back(num);
+            else return false;
+            sort(SetVector.begin(), SetVector.end());
+            return true;
+        }
     }
 };
 
-int main()
-{
-    int n; cout << "Size Plenty0: "; cin >> n;
-    Arr plenty0(n);
-    plenty0.set();
-    plenty0.output();
-    //Zadanie 1
+int main() {
+    try {
+        setlocale(LC_ALL, "rus");
+        int num;
+        Set<int>TSet(1);
+        int delNum;
+        TSet.PrintSet();
+        system("pause");
+        cout << "Enter element to delete:" << endl;
+        cin >> delNum;
+        Set<int>PODSet;
+        PODSet - delNum;
+        TSet.PrintSet();
 
-
-    int nn; cout << "Size Plenty1: "; cin >> nn;
-    Arr plenty1(nn);
-    plenty1.set();
-    plenty1.output();
-    
-    //Zadanie 2
-    int sum_n;
-    Arr plentysum = plenty0 + plenty1;
-    plentysum.output();
-
-    //Zadanie 3
-    bool res = plenty0 == plenty1;
-    if (res == 1) {
-        cout << "Two Plantys are EQUAL" << endl;
+        cout << endl << "Set 2 is multiplicity for Set 1: ";
+        if (TSet > PODSet)
+            cout << "YES" << endl;
+        else cout << "NO" << endl;
+        cout << "Set 1 and Set 2 are not equal: ";
+        if (TSet != PODSet)
+            cout << "YES";
+        else cout << "NO";
+        cout << endl;
+        cin >> num;
+        TSet + num;
+        cout << endl;
+        TSet.PrintSet();
+        system("pause");
     }
-    else {
-        cout << "Two Plantys are NOT EQUAL" << endl;
+    catch (Set<int>::NORMALNO_POIMAL) {
+        cout << "ZDOROVENNI ILI MALENKI";
     }
-    system("pause");
+    catch (Set<int>::bI) {
+        cout << "NETY SETA";
+    }
+    catch (Set<int>::YAZs) {
+        cout << "NO YAAAAZZZZ";
+    }
     return 0;
 }
